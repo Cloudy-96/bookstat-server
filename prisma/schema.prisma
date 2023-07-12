@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+enum ReadStatus {
+tbr
+reading
+read
+notRead
+}
+
+model User {
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
+  password     String
+  profile      Profile?
+  TagOnBook    TagOnBook[]
+  RatingOfBook RatingOfBook[]
+  Reviews      Reviews[]
+}
+
+model Profile {
+  id        Int     @id @default(autoincrement())
+  userId    Int     @unique
+  user      User    @relation(fields: [userId], references: [id])
+  firstName String
+  lastName  String
+  bio       String?
+}
+
+model Book {
+  id              Int            @id @default(autoincrement())
+  title           String
+  authorFirstName String
+  authorLastName  String
+  coverUrl        String?
+  numPages        Int?
+  publisher       String?
+  yearPublished   Int?
+  ReadStatus      String         @default("notRead")
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  TagOnBook       TagOnBook[]
+  RatingOfBook    RatingOfBook[]
+  Reviews         Reviews[]
+}
+
+model Tags {
+  id  Int    @id @default(autoincrement())
+  tag String @unique
+}
+
+model Reviews {
+  id        Int      @id @default(autoincrement())
+  review    String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  bookId    Int
+  book      Book     @relation(fields: [bookId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Ratings {
+  id     Int @id @default(autoincrement())
+  rating Int
+}
+
+model TagOnBook {
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  bookId    Int
+  book      Book     @relation(fields: [bookId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@id([userId, bookId])
+}
+
+model RatingOfBook {
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  bookId    Int
+  book      Book     @relation(fields: [bookId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@id([userId, bookId])
+}
