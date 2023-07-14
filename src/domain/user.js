@@ -243,3 +243,4 @@ export default class User {
     return users;
   }
 }
+

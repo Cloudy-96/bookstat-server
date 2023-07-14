@@ -15,22 +15,15 @@ export const login = async (req, res) => {
 
   try {
     const foundUser = await User.findByEmail(email);
-    console.log("foundUser------", foundUser);
-    console.log("foundUser.id------", foundUser.id);
-
-    const areCredentialsValid = await validateCredentials(
-      password,
-      foundUser.email
-    );
+    const areCredentialsValid = await validateCredentials(password, foundUser);
 
     if (!areCredentialsValid) {
       return sendDataResponse(res, 400, {
         email: "Invalid email and/or password provided",
       });
     }
-    
+
     const token = generateJwt(foundUser.id);
-    console.log("----------TOKEN----------", token);
 
     return sendDataResponse(res, 200, { token, ...foundUser.toJSON() });
   } catch (e) {
@@ -43,11 +36,6 @@ function generateJwt(userId) {
 }
 
 async function validateCredentials(password, user) {
-  console.log("--------validate credentials-----");
-
-  console.log(password);
-  console.log(user);
-
   if (!user) {
     return false;
   }
@@ -57,11 +45,7 @@ async function validateCredentials(password, user) {
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
-
-  // if (password !== user.password) {
   if (!isPasswordValid) {
-    // console.log(password)
-    // console.log("!==", user.password);
     return false;
   }
 
