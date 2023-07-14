@@ -5,8 +5,6 @@ import jwt from "jsonwebtoken";
 // import Book from "../domain/book.js";
 import User from "../domain/user.js";
 
-
-// // TODO: edit validations below to suit current project
 export async function validateId(req, res, next) {
   if (!req.user) {
     return sendMessageResponse(res, 401, "Unable to verify user");

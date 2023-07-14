@@ -29,26 +29,25 @@ export const getAllUsers = async (req, res) => {
 
     return sendDataResponse(res, 200, { users });
   }
-}
+};
 
 export const getUserByID = async (req, res) => {
-  const id = Number(req.params.id)
+  const id = Number(req.params.id);
 
   try {
-    const foundUser = await User.findById(id)
+    const foundUser = await User.findById(id);
 
-    if(!foundUser) {
-      return sendDataResponse(res, 404, {error: "User not found"})
+    if (!foundUser) {
+      return sendDataResponse(res, 404, { error: "User not found" });
     }
 
     console.log("foundUser-------------", foundUser);
-    return sendDataResponse(res, 200, foundUser)
-  } catch(e) {
-    return sendDataResponse(res, 500, {error: "Unable to get user"})
+    return sendDataResponse(res, 200, foundUser);
+  } catch (e) {
+    return sendDataResponse(res, 500, { error: "Unable to get user" });
   }
-}
+};
 
-// TODO: bug fixes
 export const create = async (req, res) => {
   const { email, password } = req.body;
 
@@ -96,17 +95,18 @@ export const create = async (req, res) => {
     const newUser = await userToCreate.save();
     console.log("createdUser-------", newUser);
 
-    // return sendDataResponse(res, 201, newUser);
+    return sendDataResponse(res, 201, newUser);
   } catch (error) {
     console.error(`Error when creating new User Profile \n`, error);
     return sendDataResponse(res, 500, { error: "Unable to create new user" });
   }
 };
 
+// TODO: bug fixes
 export const createProfile = async (req, res) => {
   const profile = {
-    create: {}
-  }
+    create: {},
+  };
 
   if (req.body.firstName) {
     profile.create.firstName = req.body.firstName;
@@ -140,4 +140,4 @@ export const createProfile = async (req, res) => {
       return sendDataResponse(res, 400, "error");
     }
   }
-}
+};
